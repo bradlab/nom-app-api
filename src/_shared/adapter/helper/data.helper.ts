@@ -94,7 +94,7 @@ export abstract class DataHelper {
     if (!data) return true;
     if (typeof data === 'string') return !data ? true : false;
     if (typeof data === 'object') {
-      return Object.keys(data).length === 0;
+      return !Object.values(data).some((v) => v != null);
     }
     return true;
   }

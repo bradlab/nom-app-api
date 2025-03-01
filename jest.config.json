@@ -15,6 +15,8 @@
     "^framework/(.*)$": "<rootDir>/_shared/framework/$1",
     "^app/(.*)$": "<rootDir>/_shared/app/$1",
     "^domain/(.*)$": "<rootDir>/_shared/domain/$1",
+    "^dashboard/(.*)$": "<rootDir>/dashboard/$1",
+    "^task/(.*)$": "<rootDir>/task/$1",
     "^util/(.*)$": "<rootDir>/_shared/util/$1"
   }
 }
