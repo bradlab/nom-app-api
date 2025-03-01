@@ -28,7 +28,11 @@
       "framework": ["./src/_shared/framework"],
       "framework/*": ["./src/_shared/framework/*"],
       "util": ["./src/_shared/util"],
-      "util/*": ["./src/_shared/util/*"]
+      "util/*": ["./src/_shared/util/*"],
+      "dashboard": ["./src/dashboard"],
+      "dashboard/*": ["./src/dashboard/*"],
+      "task": ["./src/task"],
+      "task/*": ["./src/task/*"]
     }
   }
 }
