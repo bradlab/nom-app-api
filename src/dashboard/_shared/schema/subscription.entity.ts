@@ -13,7 +13,7 @@ import { ClientEntity } from './client.entity';
 
 @Entity('subscriptions')
 export class SubscriptionEntity extends ATimestamp implements ISubscription {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({

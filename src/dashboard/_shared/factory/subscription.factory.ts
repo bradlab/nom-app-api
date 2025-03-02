@@ -18,7 +18,9 @@ export abstract class SubscriptionFactory {
     
     subscription.price = data.price;
     subscription.value = data.value;
-    subscription.duration = data.duration;
+    // calcule la durée en jour entre la date de début et la date de fin
+    const duration = Math.ceil((subscription.endDate.getTime() - subscription.startDate.getTime()) / (1000 * 3600 * 24));
+    subscription.duration = data.duration ?? duration;
 
     return subscription;
   }

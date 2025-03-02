@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   forwardRef,
   Inject,
   Injectable,
@@ -95,6 +96,14 @@ export class SubscriptionService implements ISubscriptionService {
       if (!client) {
         throw new NotFoundException('Client not found');
       }
+
+      const existedSubscription = await this.dashboardRepository.subscriptions.findOne({
+        where: { client: {id: data.clientID}, type: data.type, isActivated: true },
+      });
+
+      if (existedSubscription) {
+        throw new ConflictException('Client already has an active subscription');
+      }
   
       return await this.dashboardRepository.subscriptions.create(
         SubscriptionFactory.create(data, client),
@@ -124,12 +133,10 @@ export class SubscriptionService implements ISubscriptionService {
 
   async bulk(user: Staff, datas: ICreateSubscriptionDTO[]): Promise<ISubscription[]> {
     try {
-      const subscriptions: ISubscription[] = [];
-      for (const data of datas) {
-        const subscription = await this.add(user, data);
-        subscriptions.push(subscription);
-      }
-      return subscriptions;
+      // TODO: Optimisation obligatoire
+      return (await Promise
+        .all(datas.map(async (data) => await this.add(user, data).catch((error) => null as any)))
+        ).filter(Boolean)
     } catch (error) {
       this.logger.error(error, 'ERROR::SubscriptionService.bulk');
       throw error;

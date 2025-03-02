@@ -10,17 +10,17 @@ export class Client extends Person {
   labelName?: string;
   // relation
   subscriptions?: ISubscription[];
-  support?: SupportTicket[];
+  supports?: SupportTicket[];
   // View model
   isExpiring?: boolean;
 }
 
-export interface OClient extends Partial<Omit<Client, 'subscriptions' | 'histories'>> {
+export interface OClient extends Partial<Omit<Client, 'subscriptions' | 'supports'>> {
   id: string;
   subscriptions?: OSubscription[];
-  histories?: OSupportTicket[];
+  supports?: OSupportTicket[];
   nbrSubscription?: number;
-  nbrTransaction?: number;
+  nbrSupport?: number;
 }
 
 export interface SignedClient extends OClient {

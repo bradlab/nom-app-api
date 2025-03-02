@@ -144,8 +144,8 @@ export class ClientController {
       @GetUser() user: Staff,
       @Body(new ParseArrayPipe({ items: RegisterClientDTO })) datas: RegisterClientDTO[],
     ) {
-      const prestations = await this.clientService.bulk(user, datas);
-      return prestations?.map((prestation) => ClientFactory.getClient(prestation));
+      const clients = await this.clientService.bulk(user, datas);
+      return clients?.map((prestation) => ClientFactory.getClient(prestation));
     }
 
   /**

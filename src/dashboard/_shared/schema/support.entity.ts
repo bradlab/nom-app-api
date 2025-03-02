@@ -4,9 +4,11 @@ import { SupportTicket } from '../model/transaction.model';
 import { SubscriptionTypeEnum } from '../model/subscription.model';
 import { ClientEntity } from './client.entity';
 import { Client } from '../model/client.model';
+import { Staff } from '../model/staff.model';
+import { StaffEntity } from './staff.entity';
 
 @Entity('supports')
-export class TransactionEntity
+export class SupportEntity
   extends ATimestamp
   implements SupportTicket
 {
@@ -25,9 +27,21 @@ export class TransactionEntity
   @Column({ default: true })
   isActivated: boolean;
 
-  @ManyToOne(() => ClientEntity, (client) => client.support, {
+  @ManyToOne(() => ClientEntity, (client) => client.supports, {
     eager: true,
     onDelete: 'CASCADE',
   })
   client: Client; // Relation correcte avec l'objet ClientEntity
+
+  @ManyToOne(() => StaffEntity, (manager) => manager.supports, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  manager: Staff;
+
+  @ManyToOne(() => StaffEntity, (agent) => agent.supports, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  agent: Staff;
 }

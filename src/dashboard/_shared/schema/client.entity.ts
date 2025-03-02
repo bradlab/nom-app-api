@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { ATimestamp } from 'framework/timestamp.abstract';
 import { SupportTicket } from '../model/transaction.model';
-import { TransactionEntity } from './transaction.entity';
+import { SupportEntity } from './support.entity';
 import { ISubscription } from '../model/subscription.model';
 import { SubscriptionEntity } from './subscription.entity';
 import { Client } from '../model/client.model';
@@ -66,6 +66,6 @@ export class ClientEntity extends ATimestamp implements Client {
   })
   subscriptions: ISubscription[];
 
-  @OneToMany(() => TransactionEntity, (support) => support.client, {onDelete: 'CASCADE'})
-  support?: SupportTicket[];
+  @OneToMany(() => SupportEntity, (support) => support.client, {onDelete: 'CASCADE'})
+  supports?: SupportTicket[];
 }

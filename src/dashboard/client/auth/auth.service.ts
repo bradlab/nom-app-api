@@ -35,9 +35,8 @@ export class ClientAuthService implements IClientAuthService {
           'Employee account email or phone number allready exist',
         );
       }
-      data.password = await HashFactory.hashPwd(data.password);
       return await this.dashboardRepository.clients.create(
-        ClientFactory.create(data),
+        await ClientFactory.create(data),
       );
     } catch (error) {
       this.logger.error(error, 'ERROR::ClientAuthService.add');

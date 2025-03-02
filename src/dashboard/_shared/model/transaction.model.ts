@@ -1,6 +1,7 @@
 import { ITimestamp } from 'domain/interface';
 import { Client, OClient } from './client.model';
 import { ISubscription, OSubscription, SubscriptionTypeEnum } from './subscription.model';
+import { Staff } from './staff.model';
 
 export enum TicketType {
   REQUEST = 'Request',
@@ -22,9 +23,10 @@ export class SupportTicket extends ITimestamp {
   amount: number;
   description?: string;
   type: SubscriptionTypeEnum;
-  client: Client;
-  subscription?: ISubscription;
   isActivated?: boolean;
+  client: Client;
+  manager?: Staff;
+  agent?: Staff;
 }
 
 export interface OSupportTicket

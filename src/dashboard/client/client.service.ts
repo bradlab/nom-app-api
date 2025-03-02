@@ -36,7 +36,7 @@ export class ClientService implements IClientService {
       }
       if (!DataHelper.isEmpty(queryParam)) {
         return await this.dashboardRepository.clients.find({
-          relations: {subscriptions: true, support: true},
+          relations: {subscriptions: true, supports: true},
           where: { ...queryParam },
           order: { createdAt: 'DESC' },
         });
@@ -45,7 +45,7 @@ export class ClientService implements IClientService {
       return [];
     }
     return await this.dashboardRepository.clients.find({
-      relations: {subscriptions: true, support: true},
+      relations: {subscriptions: true, supports: true},
       order: { createdAt: 'DESC' },
     });
   }
@@ -80,7 +80,7 @@ export class ClientService implements IClientService {
 
   async fetchOne(id: string): Promise<Client> {
     return await this.dashboardRepository.clients.findOne({
-      relations: { subscriptions: {client: true}, support: {subscription: {client: true}} },
+      relations: { subscriptions: {client: true}, supports: {client: true} },
       where: { id },
     });
   }
@@ -97,7 +97,7 @@ export class ClientService implements IClientService {
         );
       }
       const client = await this.dashboardRepository.clients.create(
-        ClientFactory.create(data),
+        await ClientFactory.create(data),
       ).then((rep) => {
         // Send password by email or sms
         return rep;
@@ -137,11 +137,11 @@ export class ClientService implements IClientService {
             const { phone } = data;
             let queryParam: DeepQueryType<Client> | DeepQueryType<Client>[] = {};
             if (phone) queryParam = { ...queryParam, phone };
-            const existingAnnonce = await this.dashboardRepository.clients.findOne({
+            const existingClient = await this.dashboardRepository.clients.findOne({
               where: queryParam,
             });
-            if(!existingAnnonce) {
-              clients.push(ClientFactory.create(data));
+            if(!existingClient) {
+              clients.push(await ClientFactory.create(data));
             }
           }
         }
@@ -151,7 +151,7 @@ export class ClientService implements IClientService {
         }
         return [];
       } catch (error) {
-        this.logger.error(error, 'ERROR::AnnonceService.add');
+        this.logger.error(error, 'ERROR::ClientService.add');
         throw error;
       }
     }

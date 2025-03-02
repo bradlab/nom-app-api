@@ -3,9 +3,10 @@ import { Client, OClient } from '../model/client.model';
 import { ICreateClientDTO, IUpdateClientDTO } from 'dashboard/client/client.service.interface';
 import { TransactionFactory } from './transaction.factory';
 import { DataHelper } from 'adapter/helper/data.helper';
+import { HashFactory } from 'adapter/hash.factory';
 
 export abstract class ClientFactory {
-  static create(data: ICreateClientDTO): Client {
+  static async create(data: ICreateClientDTO): Promise<Client> {
     const client = new Client();
     client.email = data.email;
     client.phone = data.phone;
@@ -17,7 +18,7 @@ export abstract class ClientFactory {
     client.city = data.city;
     client.sex = data.sex;
     client.labelName = data.labelName;
-    client.password = data.password as string;
+    client.password = await HashFactory.hashPwd(data.password!);
     return client;
   }
 
@@ -52,10 +53,10 @@ export abstract class ClientFactory {
         sex: client.sex,
         labelName: client.labelName ?? DataHelper.getFullName(client.firstname, client.lastname),
         subscriptions: deep ? SubscriptionFactory.getSubscriptions(client.subscriptions!) : [],
-        histories: deep ? TransactionFactory.getTransactions(client.support!) : [],
+        supports: deep ? TransactionFactory.getTransactions(client.supports!) : [],
         isActivated: client.isActivated,
         nbrSubscription: client.subscriptions?.length,
-        nbrTransaction: client.support?.length,
+        nbrSupport: client.supports?.length,
         isExpiring: client.isExpiring,
         createdAt: client.createdAt,
         updatedAt: client.updatedAt,

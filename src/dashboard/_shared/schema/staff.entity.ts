@@ -9,6 +9,8 @@ import {
 import { ATimestamp } from 'framework/timestamp.abstract';
 import { RoleEnum, SexEnum } from 'app/enum/global.enum';
 import { Staff } from '../model/staff.model';
+import { SupportTicket } from '../model/transaction.model';
+import { SupportEntity } from './support.entity';
 
 @Entity('users')
 @Index(['phone'], { unique: true, where: `deleted_at IS NULL` })
@@ -50,4 +52,7 @@ export class StaffEntity extends ATimestamp implements Staff {
 
   @Column({ nullable: true, default: true })
   isActivated?: boolean;
+
+  @OneToMany(() => SupportEntity, (support) => support.agent, {onDelete: 'CASCADE'})
+  supports?: SupportTicket[];
 }

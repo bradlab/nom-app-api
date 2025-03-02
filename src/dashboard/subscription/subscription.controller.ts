@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   ParseArrayPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ISubscriptionService } from './subscription.service.interface';
@@ -18,8 +19,12 @@ import { ISubscription, OSubscription } from 'dashboard/_shared/model/subscripti
 import { CreateSubscriptionDTO, SubscriptionQueryDTO } from './subscription.input.dto';
 import { GetUser } from 'dashboard/_shared/decorator';
 import { Staff } from 'dashboard/_shared/model/staff.model';
+import { StaffGuard } from 'dashboard/_shared/guard/auth.guard';
+import { Roles } from 'adapter/decorator';
+import { RoleEnum } from 'app/enum';
 
 @ApiTags("Service subscription's management")
+@UseGuards(StaffGuard)
 @ApiBearerAuth()
 @Controller('subscriptions')
 export class SubscriptionController {
@@ -30,6 +35,7 @@ export class SubscriptionController {
      * @method POST
      */
   
+    @Roles([RoleEnum.MANAGEMENT, RoleEnum.COMMERCIAL])
     @Post()
     @ApiOperation({
       summary: 'Subscribe client',
@@ -41,6 +47,7 @@ export class SubscriptionController {
       return SubscriptionFactory.getSubscription(client);
     }
   
+    @Roles([RoleEnum.MANAGEMENT, RoleEnum.COMMERCIAL])
     @Post('bulk') // Cette fonctionnalité sera plus utiles pour les imports
     @ApiOperation({ summary: 'Create a list of subscriptions' })
     @ApiBody({type: CreateSubscriptionDTO, isArray: true})
@@ -62,14 +69,22 @@ export class SubscriptionController {
    * @param param Paramètres de filtrage
    * @returns Une liste des abonnement groupés par mois et année
    */
+  @Roles([RoleEnum.MANAGEMENT, RoleEnum.COMMERCIAL])
   @ApiOperation({ summary: 'Retrieve subscriptions list' })
   @ApiResponse({type: DocSubscriptionDTO, isArray: true})
   @Get()
-  async getAll(
-    @Query() param: SubscriptionQueryDTO
-  ) {
+  async getAll( @Query() param: SubscriptionQueryDTO): Promise<OSubscription[]> {
     const subs = await this.subscriptionService.fetchAll(param);
     return subs.map(sub => SubscriptionFactory.getSubscription(sub));
+  }
+
+  @Roles([RoleEnum.MANAGEMENT, RoleEnum.COMMERCIAL])
+  @ApiOperation({ summary: 'Group subscriptions list' })
+  @ApiResponse({type: DocSubscriptionDTO, isArray: true})
+  @Get('group')
+  async groupAll(@Query() param: SubscriptionQueryDTO) {
+    const subs = await this.subscriptionService.fetchAll(param);
+    return this.groupByMonthYear(subs);
   }
 
   groupByMonthYear(data: ISubscription[]): { [key: string]: ISubscription[] } {
@@ -105,6 +120,7 @@ export class SubscriptionController {
     return SubscriptionFactory.getSubscription(await this.subscriptionService.fetchOne(id));
   }
 
+  @Roles([RoleEnum.MANAGEMENT, RoleEnum.COMMERCIAL])
   @Patch('state')
   @ApiOperation({ summary: "Change subscription state", description: "Activer ou désactiver un ou plusieurs abonnements" })
   @ApiBody({
