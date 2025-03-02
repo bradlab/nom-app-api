@@ -1,13 +1,16 @@
 import { ITimestamp } from 'domain/interface';
-import { Prestation, OPrestation } from './prestation.model';
+import { OPrestation, Prestation } from './prestation.model';
 import { Client, OClient } from './client.model';
 import { Transaction, SubscriptionTypeEnum } from './transaction.model';
+import { PeriodUnitEnum } from 'app/enum';
 
 export class ISubscription extends ITimestamp {
   id: string;
   isActivated: boolean;
   type: SubscriptionTypeEnum;
   client?: Client;
+  period?: number;
+  periodUnit?: PeriodUnitEnum;
   prestation?: Prestation;
   startAt: Date;
   dueDate?: Date;

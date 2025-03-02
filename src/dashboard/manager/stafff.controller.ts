@@ -28,15 +28,15 @@ import { IDParamDTO, IDsParamDTO } from 'adapter/param.dto';
 import { IStaffService } from './staff.service.interface';
 import {
   UserQuerDTO,
-  RegisterStaffDTO,
   UpdateUserDTO,
 } from './staff.input.dto';
 import { OStaff } from '../_shared/model/staff.model';
 import { StaffFactory } from '../_shared/factory/staff.factory';
 import { DocStaffDTO } from './doc.staff.dto';
-import { StaffGuard } from '../_shared/guard/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BaseConfig } from 'config/base.config';
+import { StaffGuard } from 'dashboard/_shared/guard/auth.guard';
+import { RegisterStaffDTO } from 'dashboard/auth/auth.input.dto';
 
 @ApiTags('User as Staff management')
 @UseGuards(StaffGuard)

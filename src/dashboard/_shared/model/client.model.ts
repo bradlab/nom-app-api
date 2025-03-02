@@ -7,6 +7,7 @@ export class Client extends Person {
   password: string;
   deviceToken?: string;
   city?: string;
+  labelName?: string;
   // relation
   subscriptions?: ISubscription[];
   histories?: Transaction[];

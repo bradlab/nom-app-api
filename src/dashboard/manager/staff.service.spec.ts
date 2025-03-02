@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 import { faker } from '@faker-js/faker';
-import { SexEnum } from 'app/enum/global.enum';
+import { RoleEnum, SexEnum } from 'app/enum/global.enum';
 import { TestGlobalConfig } from 'test/test-config.spec';
 import { StaffService } from './staff.service';
 import { IDashboardRepository } from '../_shared/dashboard.repository';
@@ -30,6 +30,7 @@ describe('UserService', () => {
     email,
     phone,
     sex: faker.helpers.enumValue(SexEnum),
+    role: faker.helpers.enumValue(RoleEnum),
     address: faker.location.streetAddress(),
     country: faker.location.country(),
   };

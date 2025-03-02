@@ -1,14 +1,16 @@
 import { PartialDeep } from 'domain/types';
 import { Staff } from 'dashboard/_shared/model/staff.model';
 import { IBasicPersonnalInfoDTO } from 'app/person.input.dto';
+import { RoleEnum } from 'app/enum';
 
 export interface ICreateStaffDTO extends IBasicPersonnalInfoDTO {
   avatar?: string;
   fullname?: string;
+  role: RoleEnum;
 }
 export interface IRegisterStafftDTO extends ICreateStaffDTO {
   password: string;
-  fullname?: string;
+  role: RoleEnum;
   deviceToken?: string;
 }
 export interface ISignedStaffDTO {

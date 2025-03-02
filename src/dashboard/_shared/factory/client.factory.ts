@@ -2,6 +2,7 @@ import { SubscriptionFactory } from './subscription.factory';
 import { Client, OClient } from '../model/client.model';
 import { ICreateClientDTO, IUpdateClientDTO } from 'dashboard/client/client.service.interface';
 import { TransactionFactory } from './transaction.factory';
+import { DataHelper } from 'adapter/helper/data.helper';
 
 export abstract class ClientFactory {
   static create(data: ICreateClientDTO): Client {
@@ -14,6 +15,8 @@ export abstract class ClientFactory {
     client.lastname = data.lastname;
     client.country = data.country;
     client.city = data.city;
+    client.sex = data.sex;
+    client.labelName = data.labelName;
     client.password = data.password as string;
     return client;
   }
@@ -26,7 +29,9 @@ export abstract class ClientFactory {
     client.city = data.city ?? client.city;
     client.NIF = data.NIF ?? client.NIF;
     client.email = data.email ?? client.email;
-    client.phone = data.phone ?? data.phone;
+    client.phone = data.phone ?? client.phone;
+    client.sex = data.sex ?? client.sex;
+    client.labelName = data.labelName ?? client.labelName;
     if (client.NIF) {
       client.isBusiness = true;
     }
@@ -44,6 +49,8 @@ export abstract class ClientFactory {
         address: client.address,
         country: client.country,
         city: client.city,
+        sex: client.sex,
+        labelName: client.labelName ?? DataHelper.getFullName(client.firstname, client.lastname),
         subscriptions: deep ? SubscriptionFactory.getSubscriptions(client.subscriptions!) : [],
         histories: deep ? TransactionFactory.getTransactions(client.histories!) : [],
         isActivated: client.isActivated,
@@ -53,6 +60,6 @@ export abstract class ClientFactory {
         updatedAt: client.updatedAt,
       };
     }
-    return null as any;
+    return null as unknown as OClient;
   }
 }

@@ -6,6 +6,7 @@ import { IRegisterClienttDTO } from './auth/auth.service.interface';
 export interface ICreateClientDTO extends Partial<IRegisterClienttDTO> {
   NIF?: string;
   city?: string;
+  labelName?: string;
   phone: string;
 };
 export interface IUpdateClientDTO extends Partial<ICreateClientDTO> {

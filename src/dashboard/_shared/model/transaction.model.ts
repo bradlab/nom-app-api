@@ -4,8 +4,8 @@ import { Client, OClient } from './client.model';
 import { ISubscription, OSubscription } from './subscription.model';
 
 export enum SubscriptionTypeEnum {
-  AUTOMATIC = 'AUTOMATIC',
-  MANUAL = 'MANUAL',
+  SUBSCRIPTION = 'SUBSCRIPTION',
+  FORFAIT = 'FORFAIT',
 }
 
 export class Transaction extends ITimestamp {

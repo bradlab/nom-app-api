@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ATimestamp } from 'framework/timestamp.abstract';
-import { SexEnum } from 'app/enum/global.enum';
+import { RoleEnum, SexEnum } from 'app/enum/global.enum';
 import { Staff } from '../model/staff.model';
 
 @Entity('users')
@@ -35,8 +35,11 @@ export class StaffEntity extends ATimestamp implements Staff {
   @Column({ nullable: true })
   address?: string;
 
-  @Column({ nullable: true, enum: SexEnum })
+  @Column({ nullable: true, enum: SexEnum, default: SexEnum.UNKNOWN })
   sex?: SexEnum;
+
+  @Column({ nullable: true, enum: RoleEnum })
+  role: RoleEnum;
 
   @Exclude()
   @Column()

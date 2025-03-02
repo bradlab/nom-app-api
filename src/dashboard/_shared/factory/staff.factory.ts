@@ -14,6 +14,7 @@ export abstract class StaffFactory {
     user.lastname = data.lastname;
     user.avatar = data.avatar;
     user.sex = data.sex;
+    user.role = data.role;
     user.country = data.country;
     user.password = await HashFactory.hashPwd(data.password);
     return user;
@@ -27,6 +28,7 @@ export abstract class StaffFactory {
     user.country = data.country ?? user.country;
     user.avatar = data.avatar ?? user.avatar;
     user.sex = data.sex ?? user.sex;
+    user.role = data.role ?? user.role;
     if (all) {
       user.email = data.email ?? user.email;
       user.phone = data.phone ?? data.phone;
@@ -50,6 +52,7 @@ export abstract class StaffFactory {
         address: user.address,
         avatar: DataHelper.getFileLink(user.avatar!),
         sex: user.sex,
+        role: user.role,
         isActivated: user.isActivated,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,

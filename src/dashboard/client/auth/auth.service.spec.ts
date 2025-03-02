@@ -8,6 +8,7 @@ import { Staff } from 'dashboard/_shared/model/staff.model';
 import { IClientAuthService } from './auth.service.interface';
 import { ClientAuthService } from './auth.service';
 import { ISigninAccoutDTO } from 'dashboard/auth/auth.service.interface';
+import { Client } from 'dashboard/_shared/model/client.model';
 
 describe('AuthService', () => {
   let service: IClientAuthService;
@@ -20,9 +21,11 @@ describe('AuthService', () => {
     email: faker.internet.email(),
     password,
   };
-  const userData: Staff = {
+  const userData: Client = {
     id: faker.string.uuid(),
-    fullname: `${firstName} ${lastName}`,
+    firstname: firstName,
+    lastname: lastName,
+    NIF: faker.string.alphanumeric(),
     phone: faker.phone.number({ style: 'international' }),
     email: faker.internet.email({ firstName, lastName }),
     createdAt: faker.date.past(),

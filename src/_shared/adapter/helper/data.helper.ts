@@ -24,8 +24,10 @@ export abstract class DataHelper {
     return [];
   }
 
-  static getFullName(firstname: string, lastname: string) {
-    return `${firstname} ${lastname}`;
+  static getFullName(firstname?: string, lastname?: string) {
+    if (firstname && lastname)
+      return `${firstname} ${lastname}`;
+    return firstname ?? lastname;
   }
 
   static getFileLink(file?: string): string {

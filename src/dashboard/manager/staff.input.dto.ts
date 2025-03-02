@@ -24,15 +24,6 @@ export class StaffAccoutDTO extends BasicPersonnalInfoDTO {
   avatar?: string;
 }
 
-export class RegisterStaffDTO extends StaffAccoutDTO {
-  @ApiProperty({
-    type: String,
-    name: 'password',
-  })
-  @IsString()
-  password: string;
-}
-
 export class UpdateUserDTO extends PartialType(StaffAccoutDTO) {
   @ApiProperty({
     type: String,

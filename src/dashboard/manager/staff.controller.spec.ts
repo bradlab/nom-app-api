@@ -5,7 +5,7 @@ import { StaffService } from './staff.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { TestGlobalConfig } from 'test/test-config.spec';
 import { StaffController } from './stafff.controller';
-import { SexEnum } from 'app/enum/global.enum';
+import { RoleEnum, SexEnum } from 'app/enum/global.enum';
 import { IRegisterStafftDTO } from 'dashboard/auth/auth.service.interface';
 import { IStaffService } from './staff.service.interface';
 import { IDashboardRepository } from '../_shared/dashboard.repository';
@@ -22,6 +22,7 @@ describe('StaffController', () => {
     lastname: lastName,
     phone: faker.phone.number({ style: 'international' }),
     sex: faker.helpers.enumValue(SexEnum),
+    role: faker.helpers.enumValue(RoleEnum),
     email: faker.internet.email({ firstName, lastName }),
     password: faker.string.alphanumeric(8),
     address: faker.location.streetAddress(),

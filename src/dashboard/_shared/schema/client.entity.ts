@@ -12,6 +12,7 @@ import { ISubscription } from '../model/subscription.model';
 import { SubscriptionEntity } from './subscription.entity';
 import { Client } from '../model/client.model';
 import { Exclude } from 'class-transformer';
+import { SexEnum } from 'app/enum';
 
 @Entity('clients')
 @Index(['phone'], { unique: true, where: `deleted_at IS NULL` })
@@ -40,6 +41,12 @@ export class ClientEntity extends ATimestamp implements Client {
 
   @Column({ nullable: true })
   NIF?: string;
+
+  @Column({ nullable: true })
+  labelName?: string;
+
+  @Column({ nullable: true, enum: SexEnum })
+  sex?: SexEnum;
 
   @Column({ nullable: true })
   country?: string;
