@@ -74,8 +74,10 @@ function getIntervalDates(
   interval: number,
   inFuture: boolean,
   type?: PeriodUnitEnum,
+  initialDate?: Date,
 ) {
-  const from = new Date();
+  // Le initialDate est la date de départ et par défaut, elle sera la date actuelle
+  const from = initialDate ? new Date(initialDate) : new Date();
   const to = new Date();
   if (inFuture) {
     switch (type) {

@@ -10,9 +10,6 @@ export class DocStaffDTO
   @ApiProperty({ type: String, name: 'id' })
   id: string;
 
-  @ApiProperty({ type: String, name: 'matricule', required: false })
-  matricule: string;
-
   @ApiProperty({ type: Boolean, name: 'isActivated' })
   isActivated: boolean;
 
@@ -41,6 +38,6 @@ export class DocDashboardMetricDTO implements BaseDashboardMetric {
   @ApiProperty({ type: Number, name: 'prestations' })
   prestations: number;
 
-  @ApiProperty({ type: Number, name: 'transactions' })
+  @ApiProperty({ type: Number, name: 'supports' })
   supports: number;
 }

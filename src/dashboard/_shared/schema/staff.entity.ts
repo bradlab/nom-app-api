@@ -7,8 +7,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ATimestamp } from 'framework/timestamp.abstract';
-import { SexEnum } from 'app/enum/global.enum';
+import { RoleEnum, SexEnum } from 'app/enum/global.enum';
 import { Staff } from '../model/staff.model';
+import { SupportTicket } from '../model/transaction.model';
+import { SupportEntity } from './support.entity';
 
 @Entity('users')
 @Index(['phone'], { unique: true, where: `deleted_at IS NULL` })
@@ -29,23 +31,17 @@ export class StaffEntity extends ATimestamp implements Staff {
   @Column({ nullable: true })
   lastname?: string;
 
-  @Column({ nullable: true }) // will be used for entreprise
-  fullname: string;
-
-  @Column({ nullable: true })
-  username?: string;
-
   @Column({ nullable: true })
   avatar?: string;
 
   @Column({ nullable: true })
   address?: string;
 
-  @Column({ nullable: true, enum: SexEnum })
+  @Column({ nullable: true, enum: SexEnum, default: SexEnum.UNKNOWN })
   sex?: SexEnum;
 
-  @Column({ nullable: true })
-  country?: string;
+  @Column({ nullable: true, enum: RoleEnum })
+  role: RoleEnum;
 
   @Exclude()
   @Column()
@@ -56,4 +52,7 @@ export class StaffEntity extends ATimestamp implements Staff {
 
   @Column({ nullable: true, default: true })
   isActivated?: boolean;
+
+  @OneToMany(() => SupportEntity, (support) => support.agent, {onDelete: 'CASCADE'})
+  supports?: SupportTicket[];
 }

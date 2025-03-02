@@ -4,6 +4,13 @@ export enum SexEnum {
   UNKNOWN = 'UNKNOWN',
 }
 
+export enum RoleEnum {
+  MANAGEMENT = 'MANAGEMENT',
+  SUPPORT_MANAGER = 'SUPPORT_MANAGER',
+  SUPPORT = 'SUPPORT',
+  COMMERCIAL = 'COMMERCIAL',
+}
+
 export enum MaritalStatusEnum {
   SINGLE = 'SINGLE',
   MARRIED = 'MARRIED',

@@ -1,5 +1,5 @@
 import { ITimestamp } from 'domain/interface';
-import { MaritalStatusEnum } from 'app/enum';
+import { MaritalStatusEnum, SexEnum } from 'app/enum';
 
 export class Person extends ITimestamp {
   id: string;
@@ -9,9 +9,9 @@ export class Person extends ITimestamp {
   phone?: string;
   address?: string;
   country?: string;
-  nationality?: string;
-  religion?: string;
+  sex?: SexEnum;
   maritalStatus?: MaritalStatusEnum;
+  isBusiness?: boolean;
   isActivated?: boolean;
 }
 

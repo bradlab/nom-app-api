@@ -110,7 +110,7 @@ export class StaffService implements IStaffService {
         }
         if (isEdit) return true;
         const newUser = await this.dashboardRepository.users.update(
-          StaffFactory.updateUsername(staff, data),
+          StaffFactory.update(staff, data),
         );
         if (newUser) {
           return true;

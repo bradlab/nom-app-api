@@ -17,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiExcludeEndpoint,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -41,7 +42,7 @@ import { Public } from 'adapter/decorator';
 import { StaffGuard } from 'dashboard/_shared/guard/auth.guard';
 import { DocSignedStaffDTO, DocStaffDTO } from 'dashboard/manager/doc.staff.dto';
 
-@ApiTags('User Authentication')
+@ApiTags('User as staff Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: IAuthService) {}
@@ -86,6 +87,7 @@ export class AuthController {
    * @method POST
    */
 
+  @ApiExcludeEndpoint()
   @Public()
   @Post('signup')
   @ApiConsumes('multipart/form-data', 'application/json')

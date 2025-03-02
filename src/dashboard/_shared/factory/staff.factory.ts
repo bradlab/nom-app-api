@@ -13,10 +13,8 @@ export abstract class StaffFactory {
     user.firstname = data.firstname;
     user.lastname = data.lastname;
     user.avatar = data.avatar;
-    user.fullname =
-      data.fullname ?? DataHelper.getFullName(data.firstname, data.lastname);
-    user.address = data.address;
     user.sex = data.sex;
+    user.role = data.role;
     user.country = data.country;
     user.password = await HashFactory.hashPwd(data.password);
     return user;
@@ -29,24 +27,12 @@ export abstract class StaffFactory {
     user.address = data.address ?? user.address;
     user.country = data.country ?? user.country;
     user.avatar = data.avatar ?? user.avatar;
-    user.username = data.username ?? user.username;
-    if (data.firstname || data.lastname) {
-      user.fullname = DataHelper.getFullName(
-        user.firstname!,
-        user.lastname!,
-      );
-    }
     user.sex = data.sex ?? user.sex;
+    user.role = data.role ?? user.role;
     if (all) {
       user.email = data.email ?? user.email;
       user.phone = data.phone ?? data.phone;
     }
-
-    return user;
-  }
-  static updateUsername(user: Staff, data: IUpdateStaffDTO): Staff {
-    user.email = data.email ?? user.email;
-    user.phone = data.phone ?? data.phone;
 
     return user;
   }
@@ -59,10 +45,14 @@ export abstract class StaffFactory {
         phone: user.phone,
         firstname: user.firstname,
         lastname: user.lastname,
-        fullname: user.fullname,
+        fullname: DataHelper.getFullName(
+          user.firstname!,
+          user.lastname!,
+        ),
         address: user.address,
         avatar: DataHelper.getFileLink(user.avatar!),
         sex: user.sex,
+        role: user.role,
         isActivated: user.isActivated,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,

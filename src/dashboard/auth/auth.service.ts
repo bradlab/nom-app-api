@@ -36,7 +36,7 @@ export class AuthService implements IAuthService {
       const { email, phone } = data;
       let existed: Staff = undefined as any;
       if (email) existed = await this.search({ email });
-      if (phone) existed = await this.search({ phone });
+      if (phone && !existed) existed = await this.search({ phone });
       if (existed) {
         throw new ConflictException(
           'Employee account email or phone number allready exist',

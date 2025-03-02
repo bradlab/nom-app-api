@@ -1,13 +1,12 @@
 import { Person } from 'domain/interface/person.model';
-import { SexEnum } from 'app/enum';
+import { RoleEnum, SexEnum } from 'app/enum';
 
 export class Staff extends Person {
-  fullname: string;
-  username?: string;
+  fullname?: string;
   password: string;
   code?: string;
   avatar?: string;
-  sex?: SexEnum;
+  role: RoleEnum;
   // relation
 }
 

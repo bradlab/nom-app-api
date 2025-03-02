@@ -10,8 +10,6 @@ export interface IPhoneParamDTO {
 
 export interface IUserParamDTO {
   ids?: string[];
-  matricule?: string;
-  roleID?: string;
   email?: string;
   phone?: string;
 }
@@ -24,4 +22,10 @@ export interface IGlobalSearch {
   userID?: string;
   clientID?: string;
   reference?: string;
+}
+
+export interface IDateFilter {
+  from?: Date;
+  to?: Date;
+  date?: Date;
 }

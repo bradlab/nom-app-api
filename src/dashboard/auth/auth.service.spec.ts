@@ -7,6 +7,7 @@ import { HashFactory } from 'adapter/hash.factory';
 import { TestGlobalConfig } from 'test/test-config.spec';
 import { Staff } from 'dashboard/_shared/model/staff.model';
 import { IAuthService, ISigninAccoutDTO } from './auth.service.interface';
+import { RoleEnum } from 'app/enum';
 
 describe('AuthService', () => {
   let service: IAuthService;
@@ -26,6 +27,7 @@ describe('AuthService', () => {
     email: faker.internet.email({ firstName, lastName }),
     createdAt: faker.date.past(),
     updatedAt: faker.date.past(),
+    role: faker.helpers.enumValue(RoleEnum),
     password,
   };
 
