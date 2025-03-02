@@ -36,7 +36,6 @@ export class ClientAuthService implements IClientAuthService {
         );
       }
       data.password = await HashFactory.hashPwd(data.password);
-      console.log('DATA ======= ', data);
       return await this.dashboardRepository.clients.create(
         ClientFactory.create(data),
       );
