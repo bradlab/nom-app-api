@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ATimestamp } from 'framework/timestamp.abstract';
-import { Transaction } from '../model/transaction.model';
+import { SupportTicket } from '../model/transaction.model';
 import { TransactionEntity } from './transaction.entity';
 import { ISubscription } from '../model/subscription.model';
 import { SubscriptionEntity } from './subscription.entity';
@@ -61,11 +61,11 @@ export class ClientEntity extends ATimestamp implements Client {
   @Column()
   password: string;
 
-  @OneToMany(() => SubscriptionEntity, (store) => store.client, {
+  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.client, {
     onDelete: 'CASCADE',
   })
   subscriptions: ISubscription[];
 
-  @OneToMany(() => TransactionEntity, (transaction) => transaction.client)
-  histories?: Transaction[];
+  @OneToMany(() => TransactionEntity, (support) => support.client, {onDelete: 'CASCADE'})
+  support?: SupportTicket[];
 }

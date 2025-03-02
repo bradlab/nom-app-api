@@ -3,47 +3,43 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany,
+  JoinColumn,
 } from 'typeorm';
-import { PrestationEntity } from './prestation.entity';
-import { Prestation } from '../model/prestation.model';
 import { ATimestamp } from 'framework/timestamp.abstract';
 import { ISubscription } from '../model/subscription.model';
-import { ClientEntity } from './client.entity';
 import { Client } from '../model/client.model';
-import { TransactionEntity } from './transaction.entity';
-import { Transaction, SubscriptionTypeEnum } from '../model/transaction.model';
+import { SubscriptionTypeEnum } from '../model/subscription.model';
+import { ClientEntity } from './client.entity';
 
 @Entity('subscriptions')
 export class SubscriptionEntity extends ATimestamp implements ISubscription {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
-  
-  @Column({ default: true })
-  isActivated: boolean;
 
-  @Column({ enum: SubscriptionTypeEnum, nullable: true })
+  @Column({
+    type: 'enum',
+    enum: SubscriptionTypeEnum,
+  })
   type: SubscriptionTypeEnum;
 
-  @Column({ nullable: true, type: 'timestamp with time zone' })
-  startAt: Date;
+  @Column({ nullable: true })
+  value?: number; // en Mega octets (uniquement pour les forfaits)
 
-  @Column({ nullable: true, type: 'timestamp with time zone' })
-  dueDate: Date;
+  @Column({ nullable: true })
+  duration: number; // Durée en jours
 
-  @Column({ nullable: true, type: 'timestamp with time zone' })
-  closedAt: Date;
+  @Column()
+  startDate: Date;
 
-  @ManyToOne(() => ClientEntity, (client) => client.subscriptions)
-  client?: Client;
+  @Column()
+  endDate: Date;
 
-  @ManyToOne(() => PrestationEntity, (annonce) => annonce.subscriptions, {
-    onDelete: 'NO ACTION',
-  })
-  prestation?: Prestation;
+  @Column()
+  price: number;
 
-  @OneToMany(() => TransactionEntity, (transaction) => transaction.subscription, {
-    onDelete: 'NO ACTION',
-  })
-  transactions?: Transaction[];
+  @ManyToOne(() => ClientEntity, (client) => client.subscriptions, { onDelete: 'CASCADE' })
+  client: Client;
+
+  @Column({ default: true })
+  isActivated: boolean;
 }

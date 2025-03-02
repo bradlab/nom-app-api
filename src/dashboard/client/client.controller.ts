@@ -10,6 +10,7 @@ import {
   UseGuards,
   UploadedFile,
   UseInterceptors,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -26,7 +27,6 @@ import { diskStorage } from 'multer';
 import { IDParamDTO, IDsParamDTO } from 'adapter/param.dto';
 import { IClientService } from './client.service.interface';
 import {
-  ClientAccoutDTO,
   ClientQuerDTO,
   UpdateClientDTO,
 } from './client.input.dto';
@@ -38,6 +38,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { BaseConfig } from 'config/base.config';
 import { OClient } from 'dashboard/_shared/model/client.model';
 import { ClientFactory } from 'dashboard/_shared/factory/client.factory';
+import { RegisterClientDTO } from './auth/auth.input.dto';
 
 @ApiTags('Client or customer management')
 @UseGuards(StaffGuard)
@@ -123,7 +124,7 @@ export class ClientController {
     }),
   )
   async create(
-    @Body() data: ClientAccoutDTO,
+    @Body() data: RegisterClientDTO,
     @UploadedFile() file: any,
   ): Promise<OStaff> {
     data.logo = file ? file.filename : undefined;
@@ -132,17 +133,18 @@ export class ClientController {
   }
 
     @Post('bulk')
-    @ApiOperation({ summary: 'Créer une liste de clients' })
+    @ApiOperation({ summary: 'Create a list of clients' })
+    @ApiBody({type: RegisterClientDTO, isArray: true})
     @ApiResponse({
       status: 200,
       description: "clients créés avec succès",
       type: DocClientDTO,
     })
     async bulk(
-      @GetUser() client: Staff,
-      @Body() datas: ClientAccoutDTO[],
+      @GetUser() user: Staff,
+      @Body(new ParseArrayPipe({ items: RegisterClientDTO })) datas: RegisterClientDTO[],
     ) {
-      const prestations = await this.clientService.bulk(client, datas);
+      const prestations = await this.clientService.bulk(user, datas);
       return prestations?.map((prestation) => ClientFactory.getClient(prestation));
     }
 
@@ -159,7 +161,7 @@ export class ClientController {
   }
 
   @Patch('state')
-  @ApiOperation({ summary: "Modification d'état des utilisateurs" })
+  @ApiOperation({ summary: "Change agent state", description: 'Activer ou désactiver un agent' })
   @ApiBody({
     type: IDsParamDTO,
     description: 'Id des utilisateurs concernés',

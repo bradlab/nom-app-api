@@ -52,10 +52,11 @@ export abstract class ClientFactory {
         sex: client.sex,
         labelName: client.labelName ?? DataHelper.getFullName(client.firstname, client.lastname),
         subscriptions: deep ? SubscriptionFactory.getSubscriptions(client.subscriptions!) : [],
-        histories: deep ? TransactionFactory.getTransactions(client.histories!) : [],
+        histories: deep ? TransactionFactory.getTransactions(client.support!) : [],
         isActivated: client.isActivated,
         nbrSubscription: client.subscriptions?.length,
-        nbrTransaction: client.histories?.length,      
+        nbrTransaction: client.support?.length,
+        isExpiring: client.isExpiring,
         createdAt: client.createdAt,
         updatedAt: client.updatedAt,
       };

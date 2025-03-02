@@ -11,9 +11,11 @@ import { AppService } from './app.service';
 import { CustomValidationPipe } from 'adapter/pipe/custom-validator.pipe';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DashboardModule } from 'dashboard/dashboard.module';
+import { TaskModule } from 'task/task.module';
+import { SeedsModule } from './_seeder/seeds.module';
 
 @Module({
-  imports: [DashboardModule],
+  imports: [SeedsModule, DashboardModule, TaskModule],
   controllers: [AppController],
   providers: [AppService],
 })

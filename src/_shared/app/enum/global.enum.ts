@@ -5,10 +5,10 @@ export enum SexEnum {
 }
 
 export enum RoleEnum {
-  MANAGER = 'MANAGER',
-  DIRECTOR = 'DIRECTOR',
+  MANAGEMENT = 'MANAGEMENT',
+  SUPPORT_MANAGER = 'SUPPORT_MANAGER',
   SUPPORT = 'SUPPORT',
-  MARKETING = 'MARKETING',
+  COMMERCIAL = 'COMMERCIAL',
 }
 
 export enum MaritalStatusEnum {

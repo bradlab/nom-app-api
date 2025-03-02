@@ -14,6 +14,8 @@ import { IDashboardRepository } from '../_shared/dashboard.repository';
 import { ClientFactory } from 'dashboard/_shared/factory/client.factory';
 import { Client } from 'dashboard/_shared/model/client.model';
 import { Staff } from 'dashboard/_shared/model/staff.model';
+import { getDates, getIntervalDates } from 'util/date.helper';
+import { PeriodUnitEnum } from 'app/enum';
 
 @Injectable()
 export class ClientService implements IClientService {
@@ -34,7 +36,7 @@ export class ClientService implements IClientService {
       }
       if (!DataHelper.isEmpty(queryParam)) {
         return await this.dashboardRepository.clients.find({
-          relations: {subscriptions: true, histories: true},
+          relations: {subscriptions: true, support: true},
           where: { ...queryParam },
           order: { createdAt: 'DESC' },
         });
@@ -43,8 +45,27 @@ export class ClientService implements IClientService {
       return [];
     }
     return await this.dashboardRepository.clients.find({
-      relations: {subscriptions: true, histories: true},
+      relations: {subscriptions: true, support: true},
       order: { createdAt: 'DESC' },
+    });
+  }
+
+  async getClientsWithExpiringSubscriptions(weeks: number): Promise<Client[]> {
+    const expiryDate = getIntervalDates(2, true, PeriodUnitEnum.WEEK)?.to;
+
+    const clients = await this.dashboardRepository.clients.find({
+      relations: {subscriptions: true},
+    });
+
+    return clients.map((client) => {
+      const expiringSubscription = client.subscriptions?.find(
+        (subscription) =>
+          subscription.endDate <= expiryDate && subscription.isActivated,
+      );
+      return {
+        ...client,
+        isExpiring: !!expiringSubscription,
+      };
     });
   }
 
@@ -59,7 +80,7 @@ export class ClientService implements IClientService {
 
   async fetchOne(id: string): Promise<Client> {
     return await this.dashboardRepository.clients.findOne({
-      relations: { subscriptions: {prestation: true}, histories: {subscription: {prestation: true}} },
+      relations: { subscriptions: {client: true}, support: {subscription: {client: true}} },
       where: { id },
     });
   }
@@ -138,14 +159,11 @@ export class ClientService implements IClientService {
 
   async setState(ids: string[]): Promise<boolean> {
     try {
-      const users = ids && (await this.dashboardRepository.clients.findByIds(ids));
-      if (users?.length > 0) {
-        users.map((user) => {
-          user.isActivated = !user.isActivated;
-          return user;
-        });
+      const clients = ids && (await this.dashboardRepository.clients.findByIds(ids));
+      if (clients?.length > 0) {
+        clients.map((user) => user.isActivated = !user.isActivated );
         return await this.dashboardRepository.clients
-          .updateMany(users)
+          .updateMany(clients)
           .then(() => true);
       }
       return false;

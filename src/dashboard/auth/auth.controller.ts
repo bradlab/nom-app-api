@@ -17,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiExcludeEndpoint,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -86,6 +87,7 @@ export class AuthController {
    * @method POST
    */
 
+  @ApiExcludeEndpoint()
   @Public()
   @Post('signup')
   @ApiConsumes('multipart/form-data', 'application/json')

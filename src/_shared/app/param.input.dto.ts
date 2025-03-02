@@ -23,3 +23,9 @@ export interface IGlobalSearch {
   clientID?: string;
   reference?: string;
 }
+
+export interface IDateFilter {
+  from?: Date;
+  to?: Date;
+  date?: Date;
+}

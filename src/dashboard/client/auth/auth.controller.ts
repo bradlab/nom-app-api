@@ -86,7 +86,7 @@ export class AuthController {
   @Post('signup')
   @ApiConsumes('multipart/form-data', 'application/json')
   @ApiOperation({
-    summary: 'Créer un compte client',
+    summary: 'Register client or customer account',
     description: 'Créé un compte client dans le système',
   })
   @UseInterceptors(

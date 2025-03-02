@@ -3,10 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DBGenericRepository } from 'framework/database.repository';
 import { Repository } from 'typeorm';
 import { StaffEntity } from './schema/staff.entity';
-import { PrestationEntity } from './schema/prestation.entity';
-import { Prestation } from './model/prestation.model';
 import { Staff } from './model/staff.model';
-import { Transaction } from './model/transaction.model';
+import { SupportTicket } from './model/transaction.model';
 import { TransactionEntity } from './schema/transaction.entity';
 import { IGenericRepository } from '../../_shared/domain/abstract';
 import { ISubscription } from './model/subscription.model';
@@ -17,8 +15,7 @@ import { Client } from './model/client.model';
 export abstract class IDashboardRepository {
   users: IGenericRepository<Staff>;
   clients: IGenericRepository<Client>;
-  transactions: IGenericRepository<Transaction>;
-  prestations: IGenericRepository<Prestation>;
+  supports: IGenericRepository<SupportTicket>;
   subscriptions: IGenericRepository<ISubscription>;
 }
 
@@ -28,8 +25,7 @@ export class DashboardRepository
 {
   users: DBGenericRepository<StaffEntity>;
   clients: DBGenericRepository<ClientEntity>;
-  transactions: DBGenericRepository<TransactionEntity>;
-  prestations: DBGenericRepository<PrestationEntity>;
+  supports: DBGenericRepository<TransactionEntity>;
   subscriptions: DBGenericRepository<SubscriptionEntity>;
 
   constructor(
@@ -39,11 +35,8 @@ export class DashboardRepository
     @InjectRepository(ClientEntity)
     private clientRepository: Repository<ClientEntity>,
 
-    @InjectRepository(PrestationEntity)
-    private prestationRepository: Repository<PrestationEntity>,
-
     @InjectRepository(TransactionEntity)
-    private transactionRepository: Repository<TransactionEntity>,
+    private supportRepository: Repository<TransactionEntity>,
 
     @InjectRepository(SubscriptionEntity)
     private storeRepository: Repository<SubscriptionEntity>,
@@ -52,9 +45,8 @@ export class DashboardRepository
   onApplicationBootstrap(): void {
     this.users = new DBGenericRepository<StaffEntity>(this.staffRepository);
     this.clients = new DBGenericRepository<ClientEntity>(this.clientRepository);
-    this.prestations = new DBGenericRepository<PrestationEntity>(this.prestationRepository);
-    this.transactions = new DBGenericRepository<TransactionEntity>(
-      this.transactionRepository,
+    this.supports = new DBGenericRepository<TransactionEntity>(
+      this.supportRepository,
     );
     this.subscriptions = new DBGenericRepository<SubscriptionEntity>(this.storeRepository);
   }

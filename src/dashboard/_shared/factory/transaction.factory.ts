@@ -1,17 +1,15 @@
 import { DataHelper } from 'adapter/helper/data.helper';
-import { OTransaction, Transaction } from '../model/transaction.model';
+import { OSupportTicket, SupportTicket } from '../model/transaction.model';
 import { ClientFactory } from './client.factory';
-import { PrestationFactory } from './prestation.factory';
 
 export abstract class TransactionFactory {
-  static getTransaction(transaction: Transaction): OTransaction {
+  static getTransaction(transaction: SupportTicket): OSupportTicket {
     if (transaction) {
       return {
         id: transaction.id,
         type: transaction.type,
         description: transaction.description,
         client: ClientFactory.getClient(transaction.client), // Conversion pour utiliser l'ID du client depuis l'entité
-        prestation: PrestationFactory.getPrestation(transaction.subscription?.prestation!),
         amount: transaction.amount,
         createdAt: transaction.createdAt,
         updatedAt: transaction.updatedAt,
@@ -25,7 +23,7 @@ export abstract class TransactionFactory {
    * @param transactions Liste des entités PointTransaction
    * @returns Liste des modèles PointTransaction
    */
-  static getTransactions(transactions: Transaction[]): OTransaction[] {
+  static getTransactions(transactions: SupportTicket[]): OSupportTicket[] {
     if (DataHelper.isNotEmptyArray(transactions)) {
       return transactions.map(this.getTransaction);
     }

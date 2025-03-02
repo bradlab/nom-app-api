@@ -14,6 +14,7 @@ import { JWT_CONSTANCE } from 'domain/constant/constants';
 import { IJwtPayload } from 'domain/interface';
 import { Staff } from '../model/staff.model';
 import { IAuthService } from '../../auth/auth.service.interface';
+import { Roles } from 'adapter/decorator';
 
 export const _extractTokenFromHeader = (
   request: Request,
@@ -38,19 +39,12 @@ export class StaffGuard implements CanActivate {
       'isPublic',
       context.getHandler(),
     );
-    const apiKey = request.headers['x-api-key'] || request.headers['X-API-KEY'];
     // habituellement true, si la requête vient d'un serveur backend pour permettre des requêtes de seed
     if (isPublic) {
       return true;
     }
-    // Le isFront, laisse passé les requêtes qui viennent du front direct de CORE.
-    const isFront = this.reflector.get<boolean>(
-      'isFront',
-      context.getHandler(),
-    );
-    if (isFront) {
-      return apiKey ? false : true;
-    }
+    const roles = this.reflector.get(Roles, context.getHandler());
+    
     try {
       const token = _extractTokenFromHeader(request);
       if (token) {
@@ -59,6 +53,9 @@ export class StaffGuard implements CanActivate {
         request['user'] = user;
         if (!user) {
           throw new UnauthorizedException();
+        }
+        if (roles) {
+          return roles.includes(user.role);
         }
         return true;
       }

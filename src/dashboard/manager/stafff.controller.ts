@@ -37,18 +37,21 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { BaseConfig } from 'config/base.config';
 import { StaffGuard } from 'dashboard/_shared/guard/auth.guard';
 import { RegisterStaffDTO } from 'dashboard/auth/auth.input.dto';
+import { Roles } from 'adapter/decorator';
+import { RoleEnum } from 'app/enum';
 
-@ApiTags('User as Staff management')
+@ApiTags('User as Agent as Staff management')
 @UseGuards(StaffGuard)
 @ApiBearerAuth()
 @Controller('users')
 export class StaffController {
   constructor(private readonly staffService: IStaffService) {}
 
+  @Roles([RoleEnum.MANAGEMENT, RoleEnum.SUPPORT_MANAGER])
   @Get()
   @ApiOperation({
-    summary: 'users list',
-    description: 'Fetch all users in the DB',
+    summary: 'list of agent',
+    description: 'Afficher la liste des agents de Nom App',
   })
   @ApiResponse({ type: DocStaffDTO, isArray: true })
   async all(@Query() param: UserQuerDTO): Promise<OStaff[]> {
@@ -56,40 +59,13 @@ export class StaffController {
       const ids: string = param.ids;
       param.ids = ids?.split(',');
     }
-    console.log('first param', param);
     const users = await this.staffService.fetchAll(param);
     return users.map((user) => StaffFactory.getUser(user));
   }
 
-  @Get('search')
-  @ApiOperation({
-    summary: 'Single account',
-    description: 'Fetch the staff account by some of its informations',
-  })
-  @ApiQuery({
-    type: String,
-    name: 'email',
-    description: 'email of the auth staff',
-    required: false,
-  })
-  @ApiQuery({
-    type: String,
-    name: 'phone',
-    description: 'phone number of the auth staff',
-    required: false,
-  })
-  @ApiResponse({ type: DocStaffDTO })
-  async search(@Query() param: UserQuerDTO): Promise<OStaff | undefined> {
-    if (param) {
-      return StaffFactory.getUser(
-        await this.staffService.search(param, undefined),
-      );
-    }
-  }
-
   @Get(':id')
   @ApiOperation({
-    summary: 'One staff',
+    summary: 'Show Agent',
     description: 'Fetch staff account by ID',
   })
   @ApiParam({
@@ -99,6 +75,7 @@ export class StaffController {
   })
   @ApiResponse({ type: DocStaffDTO })
   async show(@Param() { id }: IDParamDTO): Promise<OStaff> {
+    console.log('ID ===== ', id);
     return StaffFactory.getUser(await this.staffService.fetchOne(id));
   }
 
@@ -106,13 +83,12 @@ export class StaffController {
    * @method POST
    */
 
-  @ApiExcludeEndpoint()
+  @Roles([RoleEnum.MANAGEMENT])
   @Post()
   @ApiConsumes('multipart/form-data', 'application/json')
   @ApiOperation({
     summary: 'Create account staff',
-    description:
-      'As a partner of the project, you can create staff as employee for your business',
+    description: 'Ajouter des agents dans le système',
   })
   @UseInterceptors(
     FileInterceptor('avatar', {
@@ -127,11 +103,9 @@ export class StaffController {
     @Body() data: RegisterStaffDTO,
     @UploadedFile() file: any,
   ): Promise<OStaff | undefined> {
+    console.log('data', data);
     data.avatar = file ? file.filename : undefined;
-    data.password = DataGenerator.randomString();
-    const user = await this.staffService.add(data);
-    if (user)
-      return { ...StaffFactory.getUser(user), password: data.password };
+    return await this.staffService.add(data);
   }
 
   /**
@@ -147,8 +121,9 @@ export class StaffController {
     return StaffFactory.getUser(await this.staffService.edit(data));
   }
 
+  @Roles([RoleEnum.MANAGEMENT])
   @Patch('state')
-  @ApiOperation({ summary: "Modification d'état des utilisateurs" })
+  @ApiOperation({ summary: "Change staff agent account state" })
   @ApiBody({
     type: IDsParamDTO,
     description: 'Id des utilisateurs concernés',

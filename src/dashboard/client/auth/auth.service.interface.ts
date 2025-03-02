@@ -3,11 +3,9 @@ import { IBasicPersonnalInfoDTO } from 'app/person.input.dto';
 import { Client } from 'dashboard/_shared/model/client.model';
 import { ISigninAccoutDTO, IUpdatePwdDTO, IForgotPasswordDTO } from 'dashboard/auth/auth.service.interface';
 
-export interface ICreateClientDTO extends IBasicPersonnalInfoDTO {
-  avatar?: string;
-}
-export interface IRegisterClienttDTO extends ICreateClientDTO {
+export interface IRegisterClienttDTO extends IBasicPersonnalInfoDTO {
   password: string;
+  logo?: string;
   deviceToken?: string;
 }
 export interface ISignedClientDTO {

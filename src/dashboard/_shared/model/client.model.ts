@@ -1,4 +1,4 @@
-import { OTransaction, Transaction } from './transaction.model';
+import { OSupportTicket, SupportTicket } from './transaction.model';
 import { OSubscription, ISubscription } from './subscription.model';
 import { Person } from 'domain/interface/person.model';
 
@@ -10,13 +10,15 @@ export class Client extends Person {
   labelName?: string;
   // relation
   subscriptions?: ISubscription[];
-  histories?: Transaction[];
+  support?: SupportTicket[];
+  // View model
+  isExpiring?: boolean;
 }
 
 export interface OClient extends Partial<Omit<Client, 'subscriptions' | 'histories'>> {
   id: string;
   subscriptions?: OSubscription[];
-  histories?: OTransaction[];
+  histories?: OSupportTicket[];
   nbrSubscription?: number;
   nbrTransaction?: number;
 }

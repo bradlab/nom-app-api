@@ -1,26 +1,27 @@
 import { ITimestamp } from 'domain/interface';
-import { OPrestation, Prestation } from './prestation.model';
 import { Client, OClient } from './client.model';
-import { Transaction, SubscriptionTypeEnum } from './transaction.model';
-import { PeriodUnitEnum } from 'app/enum';
+
+export enum SubscriptionTypeEnum {
+  MONTHLY = 'MONTHLY',
+  QUARTERLY = 'QUARTERLY',
+  ANNUAL = 'ANNUAL',
+  PACKAGE = 'PACKAGE',
+}
 
 export class ISubscription extends ITimestamp {
   id: string;
-  isActivated: boolean;
   type: SubscriptionTypeEnum;
-  client?: Client;
-  period?: number;
-  periodUnit?: PeriodUnitEnum;
-  prestation?: Prestation;
-  startAt: Date;
-  dueDate?: Date;
-  closedAt?: Date;
-  transactions?: Transaction[];
+  value?: number; // en Mega octets (uniquement pour les forfaits)
+  duration?: number; // Durée en jours
+  startDate: Date;
+  endDate: Date;
+  price: number;
+  client: Client;
+  isActivated: boolean;
 }
 
-export interface OSubscription extends Partial<Omit<ISubscription, 'client' | 'prestation'>> {
+export interface OSubscription extends Partial<Omit<ISubscription, 'client'>> {
   client?: OClient;
-  prestation?: OPrestation;
 }
 
 export interface DataSubItem {
