@@ -29,12 +29,6 @@ export class StaffEntity extends ATimestamp implements Staff {
   @Column({ nullable: true })
   lastname?: string;
 
-  @Column({ nullable: true }) // will be used for entreprise
-  fullname: string;
-
-  @Column({ nullable: true })
-  username?: string;
-
   @Column({ nullable: true })
   avatar?: string;
 
@@ -43,9 +37,6 @@ export class StaffEntity extends ATimestamp implements Staff {
 
   @Column({ nullable: true, enum: SexEnum })
   sex?: SexEnum;
-
-  @Column({ nullable: true })
-  country?: string;
 
   @Exclude()
   @Column()

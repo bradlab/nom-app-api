@@ -10,8 +10,6 @@ export interface IPhoneParamDTO {
 
 export interface IUserParamDTO {
   ids?: string[];
-  matricule?: string;
-  roleID?: string;
   email?: string;
   phone?: string;
 }

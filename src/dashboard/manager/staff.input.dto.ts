@@ -21,16 +21,6 @@ export class StaffAccoutDTO extends BasicPersonnalInfoDTO {
   @IsString()
   fullName?: string;
 
-  @ApiProperty({
-    type: Boolean,
-    name: 'isMerchant',
-    required: false,
-  })
-  @IsOptional()
-  // @ParseBoolean()
-  // @IsBoolean()
-  isMerchant?: boolean;
-
   avatar?: string;
 }
 
@@ -53,9 +43,6 @@ export class UpdateUserDTO extends PartialType(StaffAccoutDTO) {
   @IsUUID()
   id: string;
 }
-export class UpdateUsernameDTO extends PartialType(
-  PickType(StaffAccoutDTO, ['email', 'phone']),
-) {}
 
 export class UserQuerDTO implements IStaffQuery {
   @ApiProperty({

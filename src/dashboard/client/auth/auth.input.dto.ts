@@ -1,11 +1,11 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
 } from 'class-validator';
 import { BasicPersonnalInfoDTO } from 'adapter/param.dto';
 
-export class RegisterStaffDTO extends OmitType(BasicPersonnalInfoDTO, ['maritalStatus', 'sex']) {
+export class RegisterClientDTO extends BasicPersonnalInfoDTO {
 
   @ApiProperty({
     type: String,
@@ -18,11 +18,11 @@ export class RegisterStaffDTO extends OmitType(BasicPersonnalInfoDTO, ['maritalS
   @ApiProperty({
     type: String,
     format: 'binary',
-    name: 'avatar',
+    name: 'logo',
     required: false,
   })
   // @IsOptional()
   // @IsString()
   // @IsNotEmpty()
-  avatar: string;
+  logo: string;
 }

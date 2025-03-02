@@ -18,7 +18,6 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { IPosition } from 'domain/interface';
 import { Person } from '../domain/interface/person.model';
 
 export class IDParamDTO implements IIDParamDTO {
@@ -80,8 +79,9 @@ export class DateFilterDTO {
 
 export class UserParamDTO implements IUserParamDTO {
   @ApiProperty({
-    type: [String],
+    type: String,
     name: 'ids',
+    isArray: true,
     description: 'Liste des ID du staff',
     required: false,
   })
@@ -89,26 +89,6 @@ export class UserParamDTO implements IUserParamDTO {
   @IsString({ each: true })
   @IsUUID(undefined, { each: true })
   ids?: string[];
-
-  @ApiProperty({
-    type: String,
-    name: 'matricule',
-    description: 'matricule of the given user',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  matricule?: string;
-
-  @ApiProperty({
-    type: String,
-    name: 'roleID',
-    description: 'ID du Poste du staff',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  roleID?: string;
 
   @ApiProperty({
     type: String,

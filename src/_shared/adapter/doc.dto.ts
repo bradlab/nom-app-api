@@ -14,9 +14,6 @@ export class DocUserDTO implements Partial<User> {
   @ApiProperty({ type: String, name: 'id' })
   id: string;
 
-  @ApiProperty({ type: String, name: 'matricule' })
-  matricule: string;
-
   @ApiProperty({
     type: String,
     name: 'firstname',

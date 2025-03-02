@@ -4,8 +4,6 @@ import { IBasicPersonnalInfoDTO } from 'app/person.input.dto';
 
 export interface ICreateStaffDTO extends IBasicPersonnalInfoDTO {
   avatar?: string;
-  isMerchant?: boolean;
-  username?: string;
   fullname?: string;
 }
 export interface IRegisterStafftDTO extends ICreateStaffDTO {
@@ -42,8 +40,6 @@ export interface IUserQuery {
   ids?: string[];
   email?: string;
   phone?: string;
-  matricule?: string;
-  roleID?: string;
 }
 export interface LogoutDTO {
   deviceToken?: string;

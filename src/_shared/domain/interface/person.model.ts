@@ -9,9 +9,8 @@ export class Person extends ITimestamp {
   phone?: string;
   address?: string;
   country?: string;
-  nationality?: string;
-  religion?: string;
   maritalStatus?: MaritalStatusEnum;
+  isBusiness?: boolean;
   isActivated?: boolean;
 }
 

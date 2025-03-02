@@ -30,12 +30,10 @@ import {
   UserQuerDTO,
   RegisterStaffDTO,
   UpdateUserDTO,
-  UpdateUsernameDTO,
 } from './staff.input.dto';
-import { Staff, OStaff } from '../_shared/model/staff.model';
+import { OStaff } from '../_shared/model/staff.model';
 import { StaffFactory } from '../_shared/factory/staff.factory';
 import { DocStaffDTO } from './doc.staff.dto';
-import { GetUser } from '../_shared/decorator';
 import { StaffGuard } from '../_shared/guard/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BaseConfig } from 'config/base.config';

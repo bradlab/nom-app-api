@@ -7,9 +7,7 @@ import {
   Patch,
   UseInterceptors,
   UploadedFile,
-  NotImplementedException,
   UseGuards,
-  BadRequestException,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -25,26 +23,24 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
-import { GetUser } from '../_shared/decorator';
-import { StaffFactory } from '../_shared/factory/staff.factory';
-import { Staff, OStaff, SignedStaff } from '../_shared/model/staff.model';
-import { IAuthService } from './auth.service.interface';
+import { IClientAuthService, IRegisterClienttDTO } from './auth.service.interface';
 import {
   ForgotPasswordDTO,
-  ResetPasswordDTO,
   SigninAccoutDTO,
   UpdatePwdDTO,
 } from 'adapter/auth.dto';
-import { RegisterStaffDTO } from './auth.input.dto';
 import { BaseConfig } from 'config/base.config';
-import { Public } from 'adapter/decorator';
-import { StaffGuard } from 'dashboard/_shared/guard/auth.guard';
-import { DocSignedStaffDTO, DocStaffDTO } from 'dashboard/manager/doc.staff.dto';
+import { GetClient, Public } from 'adapter/decorator';
+import { ClientFactory } from 'dashboard/_shared/factory/client.factory';
+import { Client, OClient, SignedClient } from 'dashboard/_shared/model/client.model';
+import { ClientGuard } from './guard/auth.guard';
+import { DocClientDTO, DocSignedClientDTO } from '../doc.client.dto';
+import { RegisterClientDTO } from './auth.input.dto';
 
-@ApiTags('User as staff Authentication')
-@Controller('auth')
+@ApiTags('Client as customer Authentication')
+@Controller('client.auth')
 export class AuthController {
-  constructor(private readonly authService: IAuthService) {}
+  constructor(private readonly authService: IClientAuthService) {}
 
   @Public()
   @Get('check.email/:email')
@@ -73,13 +69,13 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(StaffGuard)
+  @UseGuards(ClientGuard)
   @Get('token.signin')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Token connexion' })
-  @ApiResponse({ type: DocSignedStaffDTO })
-  async signinByToken(@GetUser() user: Staff): Promise<OStaff> {
-    return StaffFactory.getUser(user);
+  @ApiResponse({ type: DocSignedClientDTO })
+  async signinByToken(@GetClient() user: Client): Promise<OClient> {
+    return ClientFactory.getClient(user);
   }
 
   /**
@@ -90,11 +86,11 @@ export class AuthController {
   @Post('signup')
   @ApiConsumes('multipart/form-data', 'application/json')
   @ApiOperation({
-    summary: 'Create staff account',
-    description: 'Créé un compte utilisateur dans le système',
+    summary: 'Créer un compte client',
+    description: 'Créé un compte client dans le système',
   })
   @UseInterceptors(
-    FileInterceptor('avatar', {
+    FileInterceptor('logo', {
       storage: diskStorage({
         destination: BaseConfig.setFilePath,
         filename: BaseConfig.editFileName,
@@ -102,33 +98,27 @@ export class AuthController {
       fileFilter: BaseConfig.imageFileFilter,
     }),
   )
-  @ApiResponse({ type: DocStaffDTO })
+  @ApiResponse({ type: DocClientDTO })
   async create(
-    @Body() data: RegisterStaffDTO,
+    @Body() data: RegisterClientDTO,
     @UploadedFile() file: any,
-  ): Promise<SignedStaff> {
-    data.avatar = file?.filename;
-    const { accessToken, user } = await this.authService.signup(data);
-    if (user) {
-      return {
-        accessToken,
-        ...StaffFactory.getUser(user),
-      };
-    }
-    throw new InternalServerErrorException('User not created');
+  ): Promise<OClient> {
+    data.logo = file?.filename;
+    const client = await this.authService.signup(data as IRegisterClienttDTO);
+    return ClientFactory.getClient(client);
   }
 
   @Post('signin')
   @ApiConsumes('multipart/form-data', 'application/json')
   @ApiOperation({ summary: 'User connexion endpoint' })
   @ApiBody({ type: SigninAccoutDTO })
-  @ApiResponse({ type: DocSignedStaffDTO })
-  async signin(@Body() data: SigninAccoutDTO): Promise<SignedStaff> {
+  @ApiResponse({ type: DocSignedClientDTO })
+  async signin(@Body() data: SigninAccoutDTO): Promise<SignedClient> {
     const { accessToken, user } = await this.authService.signin(data);
     if (user) {
       return {
         accessToken,
-        ...StaffFactory.getUser(user),
+        ...ClientFactory.getClient(user),
       };
     }
     throw new UnauthorizedException('User not found');
@@ -142,36 +132,22 @@ export class AuthController {
   })
   @ApiBody({ type: ForgotPasswordDTO })
   @ApiResponse({ type: String })
-  async forgotPassword(@Body() data: ForgotPasswordDTO): Promise<string> {
+  async forgotPassword(@Body() data: ForgotPasswordDTO): Promise<boolean> {
     return await this.authService.forgotPassword(data);
-  }
-
-  @Post('password.reset')
-  @ApiOperation({
-    summary: 'Reset password',
-    description: 'This endpoint allows the staff to reset his password',
-  })
-  @ApiBody({ type: ResetPasswordDTO })
-  @ApiResponse({ type: Boolean })
-  async resetPassword(@Body() data: ResetPasswordDTO): Promise<boolean> {
-    return await this.authService.resetPassword({
-      ...data,
-      otpCode: data.otpCode?.toString(),
-    });
   }
 
   @Patch('password.update')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Update password',
-    description: 'This endpoint allows the staff to update his password',
+    description: 'Modifier le mot de passe client',
   })
   @ApiBody({ type: UpdatePwdDTO })
   @ApiResponse({ type: Boolean })
   async updatePassword(
-    @GetUser() user: Staff,
+    @GetClient() client: Client,
     @Body() data: UpdatePwdDTO,
   ): Promise<boolean> {
-    return await this.authService.updatePassword(user, data);
+    return await this.authService.updatePassword(client, data);
   }
 }

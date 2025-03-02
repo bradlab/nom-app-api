@@ -7,34 +7,27 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HashFactory } from 'adapter/hash.factory';
+import { IDashboardRepository } from 'dashboard/_shared/dashboard.repository';
+import { ClientFactory } from 'dashboard/_shared/factory/client.factory';
+import { Client } from 'dashboard/_shared/model/client.model';
+import { ISigninAccoutDTO, IUpdatePwdDTO, IForgotPasswordDTO } from 'dashboard/auth/auth.service.interface';
 
 import { DataGenerator } from 'domain/generator/data.generator';
 import { PartialDeep } from 'domain/types';
-import { IDashboardRepository } from '../_shared/dashboard.repository';
-import {
-  IForgotPasswordDTO,
-  IAuthService,
-  IRegisterStafftDTO,
-  ISigninAccoutDTO,
-  IUpdatePwdDTO,
-} from './auth.service.interface';
-import { Staff } from '../_shared/model/staff.model';
-import { IResetPasswordDTO } from './auth.service.interface';
-import { ISignedStaffDTO } from './auth.service.interface';
-import { StaffFactory } from '../_shared/factory/staff.factory';
+import { IClientAuthService, IRegisterClienttDTO, ISignedClientDTO } from './auth.service.interface';
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class ClientAuthService implements IClientAuthService {
   private readonly logger = new Logger();
   constructor(
     private dashboardRepository: IDashboardRepository,
     private jwtService: JwtService,
   ) {}
 
-  async signup(data: IRegisterStafftDTO): Promise<ISignedStaffDTO> {
+  async signup(data: IRegisterClienttDTO): Promise<Client> {
     try {
       const { email, phone } = data;
-      let existed: Staff = undefined as any;
+      let existed: Client = undefined as any;
       if (email) existed = await this.search({ email });
       if (phone && !existed) existed = await this.search({ phone });
       if (existed) {
@@ -42,17 +35,18 @@ export class AuthService implements IAuthService {
           'Employee account email or phone number allready exist',
         );
       }
-      const user = await this.dashboardRepository.users.create(
-        await StaffFactory.create(data),
+      data.password = await HashFactory.hashPwd(data.password);
+      console.log('DATA ======= ', data);
+      return await this.dashboardRepository.clients.create(
+        ClientFactory.create(data),
       );
-      return this.signin({ phone, password: data.password });
     } catch (error) {
-      this.logger.error(error, 'ERROR::AuthService.add');
+      this.logger.error(error, 'ERROR::ClientAuthService.add');
       throw error;
     }
   }
 
-  async signin(data: ISigninAccoutDTO): Promise<ISignedStaffDTO> {
+  async signin(data: ISigninAccoutDTO): Promise<ISignedClientDTO> {
     try {
       const { phone, email } = data;
       const user = await this._validateUser(data);
@@ -64,7 +58,7 @@ export class AuthService implements IAuthService {
       }
       throw new UnauthorizedException();
     } catch (error) {
-      this.logger.error(error.message, 'ERROR::AuthService.signin');
+      this.logger.error(error.message, 'ERROR::ClientAuthService.signin');
       throw error;
     }
   }
@@ -74,7 +68,7 @@ export class AuthService implements IAuthService {
       const user = await this.search({ email });
       return user ? true : false;
     } catch (error) {
-      this.logger.error(error.message, 'ERROR::AuthService.checkEmail');
+      this.logger.error(error.message, 'ERROR::ClientAuthService.checkEmail');
       throw error;
     }
   }
@@ -84,19 +78,19 @@ export class AuthService implements IAuthService {
       const user = await this.search({ phone });
       return user ? true : false;
     } catch (error) {
-      this.logger.error(error.message, 'ERROR::AuthService.checkPhone');
+      this.logger.error(error.message, 'ERROR::ClientAuthService.checkPhone');
       throw error;
     }
   }
 
-  async updatePassword(staff: Staff, data: IUpdatePwdDTO): Promise<boolean> {
+  async updatePassword(Client: Client, data: IUpdatePwdDTO): Promise<boolean> {
     try {
       const { oldPassword, newPassword } = data;
-      const user = await this.search({ id: staff.id });
+      const user = await this.search({ id: Client.id });
       if (user) {
         if (await HashFactory.isRightPwd(oldPassword, user.password!)) {
           user.password = await HashFactory.hashPwd(newPassword);
-          return await this.dashboardRepository.users
+          return await this.dashboardRepository.clients
             .update(user)
             .then(() => true);
         }
@@ -104,47 +98,33 @@ export class AuthService implements IAuthService {
       }
       throw new NotFoundException('User not found');
     } catch (error) {
-      this.logger.error(error.message, 'ERROR::AuthService.updatePassword');
+      this.logger.error(error.message, 'ERROR::ClientAuthService.updatePassword');
 
       throw error;
     }
   }
 
-  async forgotPassword(data: IForgotPasswordDTO): Promise<string> {
+  async forgotPassword(data: IForgotPasswordDTO): Promise<boolean> {
     try {
       const user = await this.search(data);
       if (user) {
-        user.code = DataGenerator.randomNumber();
-        return await this.dashboardRepository.users
+        const pwd = DataGenerator.randomString();
+        user.password = await HashFactory.hashPwd(pwd);
+        return await this.dashboardRepository.clients
           .update(user)
-          .then(() => user.code) as any;
+          .then(() => {
+            // Send new password by email or sms
+            return true;
+          });
       }
       throw new NotFoundException('User not found');
     } catch (error) {
-      this.logger.error(error.message, 'ERROR::AuthService.forgotPassword');
+      this.logger.error(error.message, 'ERROR::ClientAuthService.forgotPassword');
       throw error;
     }
   }
 
-  async resetPassword(data: IResetPasswordDTO): Promise<boolean> {
-    try {
-      const { phone, password, otpCode } = data;
-      const user = await this.search({ phone });
-      if (user /* && otpCode && user?.code === otpCode */) { // TODO: remettre
-        user.code = null as any;
-        user.password = await HashFactory.hashPwd(password);
-        return await this.dashboardRepository.users
-          .update(user)
-          .then(() => true);
-      }
-      return false;
-    } catch (error) {
-      this.logger.error(error.message, 'ERROR::AuthService.resetPassword');
-      throw error;
-    }
-  }
-
-  private async _validateUser(data: ISigninAccoutDTO): Promise<Staff> {
+  private async _validateUser(data: ISigninAccoutDTO): Promise<Client> {
     const { phone, password } = data;
     const user = await this.search({ phone, isActivated: true });
     if (user && (await HashFactory.isRightPwd(password, user.password))) {
@@ -153,7 +133,7 @@ export class AuthService implements IAuthService {
     return null as any;
   }
 
-  async search(data: PartialDeep<Staff>): Promise<Staff> {
+  async search(data: PartialDeep<Client>): Promise<Client> {
     try {
       const { email, phone, isActivated, id } = data;
       let options = {};
@@ -166,12 +146,12 @@ export class AuthService implements IAuthService {
       } else {
         options = { ...data };
       }
-      const user = await this.dashboardRepository.users.findOne({
+      const user = await this.dashboardRepository.clients.findOne({
         where: { ...options },
       });
       return user;
     } catch (error) {
-      this.logger.error(error, 'ERROR::AuthService.search');
+      this.logger.error(error, 'ERROR::ClientAuthService.search');
       throw error;
     }
   }

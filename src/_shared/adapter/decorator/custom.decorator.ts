@@ -15,3 +15,10 @@ export const GetUser = createParamDecorator((_, context): User => {
 
   throw new UnauthorizedException();
 });
+
+export const GetClient = createParamDecorator((_, context): User => {
+  const req = context.getArgs()[0];
+  if (!DataHelper.isEmpty(req?.user)) return req.user;
+
+  throw new UnauthorizedException();
+});

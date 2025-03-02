@@ -9,7 +9,6 @@ export abstract class ITimestamp {
 
 export interface User extends ITimestamp {
   id: string;
-  matricule: string;
   firstname: string;
   lastname: string;
   email?: string;
@@ -22,8 +21,3 @@ export interface User extends ITimestamp {
 }
 
 export type OUser = Partial<User>;
-
-export interface IPosition {
-  lat: number;
-  lng: number;
-}
