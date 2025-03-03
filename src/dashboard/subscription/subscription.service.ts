@@ -17,6 +17,7 @@ import { DeepQueryType } from 'domain/types';
 import { isValidDates, getDates, isCorrectRange, setPrevOrNextDate } from 'util/date.helper';
 import { IDateFilter } from 'app/param.input.dto';
 import { ITaskService } from 'task/task.service.interface';
+import { VBetween } from 'framework/orm.clauses';
 
 @Injectable()
 export class SubscriptionService implements ISubscriptionService {
@@ -76,6 +77,12 @@ export class SubscriptionService implements ISubscriptionService {
             dates.from = setPrevOrNextDate(from, true);
             dates.to = setPrevOrNextDate(to, true);
           }
+        }
+      }
+      if (dates.from && dates.to) {
+        queryParam = {
+          ...queryParam,
+          createdAt: VBetween(dates.from, dates.to),
         }
       }
       return await this.dashboardRepository.subscriptions.find({

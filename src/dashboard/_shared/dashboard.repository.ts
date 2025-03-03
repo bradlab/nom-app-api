@@ -4,7 +4,7 @@ import { DBGenericRepository } from 'framework/database.repository';
 import { Repository } from 'typeorm';
 import { StaffEntity } from './schema/staff.entity';
 import { Staff } from './model/staff.model';
-import { SupportTicket } from './model/transaction.model';
+import { SupportTicket } from './model/support.model';
 import { SupportEntity } from './schema/support.entity';
 import { IGenericRepository } from '../../_shared/domain/abstract';
 import { ISubscription } from './model/subscription.model';
@@ -39,7 +39,7 @@ export class DashboardRepository
     private supportRepository: Repository<SupportEntity>,
 
     @InjectRepository(SubscriptionEntity)
-    private storeRepository: Repository<SubscriptionEntity>,
+    private subscriptionRepository: Repository<SubscriptionEntity>,
   ) {}
 
   onApplicationBootstrap(): void {
@@ -48,6 +48,6 @@ export class DashboardRepository
     this.supports = new DBGenericRepository<SupportEntity>(
       this.supportRepository,
     );
-    this.subscriptions = new DBGenericRepository<SubscriptionEntity>(this.storeRepository);
+    this.subscriptions = new DBGenericRepository<SubscriptionEntity>(this.subscriptionRepository);
   }
 }

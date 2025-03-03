@@ -14,11 +14,9 @@ export interface ICreateSubscriptionDTO {
 }
 
 export interface ISubscriptionQuery extends IDateFilter {
-  transactionID?: string;
   type?: SubscriptionTypeEnum;
   subscriptionID?: string;
   clientID?: string;
-  prestationID?: string;
   isActivated?: boolean;
 }
 

@@ -1,4 +1,4 @@
-import { OSupportTicket, SupportTicket } from './transaction.model';
+import { OSupportTicket, SupportTicket } from './support.model';
 import { OSubscription, ISubscription } from './subscription.model';
 import { Person } from 'domain/interface/person.model';
 

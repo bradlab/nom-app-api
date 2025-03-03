@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ATimestamp } from 'framework/timestamp.abstract';
-import { SupportTicket } from '../model/transaction.model';
-import { SubscriptionTypeEnum } from '../model/subscription.model';
+import { SupportStatusEnum, SupportTicket, SupportTypeEnum } from '../model/support.model';
 import { ClientEntity } from './client.entity';
 import { Client } from '../model/client.model';
 import { Staff } from '../model/staff.model';
@@ -16,28 +15,19 @@ export class SupportEntity
   id: string;
 
   @Column()
-  amount: number;
+  message: string;
 
-  @Column({ nullable: true })
-  description: string;
+  @Column({ enum: SupportTypeEnum, nullable: true })
+  type: SupportTypeEnum;
 
-  @Column({ enum: SubscriptionTypeEnum, nullable: true })
-  type: SubscriptionTypeEnum;
-
-  @Column({ default: true })
-  isActivated: boolean;
+  @Column({ enum: SupportStatusEnum, nullable: true, default: SupportStatusEnum.PENDING })
+  status: SupportStatusEnum;
 
   @ManyToOne(() => ClientEntity, (client) => client.supports, {
     eager: true,
     onDelete: 'CASCADE',
   })
-  client: Client; // Relation correcte avec l'objet ClientEntity
-
-  @ManyToOne(() => StaffEntity, (manager) => manager.supports, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
-  manager: Staff;
+  client: Client;
 
   @ManyToOne(() => StaffEntity, (agent) => agent.supports, {
     eager: true,

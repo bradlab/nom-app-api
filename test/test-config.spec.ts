@@ -119,7 +119,6 @@ export abstract class TestGlobalConfig {
 
   static mockDataService = () => ({
     users: this.mockInRepository(),
-    prestations: this.mockInRepository(),
     clients: this.mockInRepository(),
     supports: this.mockInRepository(),
     subscriptions: this.mockInRepository(),
