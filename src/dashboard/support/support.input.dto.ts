@@ -8,6 +8,7 @@ import {
 
 import { ISupportQuery, ICreateSupportDTO, IChangeStatusDTO } from './support.service.interface';
 import { SupportStatusEnum, SupportTypeEnum } from 'dashboard/_shared/model/support.model';
+import { DateFilterDTO } from 'adapter/param.dto';
 
 export class CreateSupportDTO implements ICreateSupportDTO {
 
@@ -56,7 +57,7 @@ export class UpdateSupportDTO extends PartialType(CreateSupportDTO) {
   id: string;
 }
 
-export class SupportQuery implements ISupportQuery {
+export class SupportQueryDTO extends DateFilterDTO implements ISupportQuery {
   @ApiProperty({ type: String, name: 'id', required: false })
   @IsOptional()
   @IsString()

@@ -31,7 +31,7 @@ import { IDParamDTO, IDsParamDTO } from 'adapter/param.dto';
 import { SupportFactory } from 'dashboard/_shared/factory/support.factory';
 import { OSupportTicket, SupportStatusEnum } from 'dashboard/_shared/model/support.model';
 import { ISupportService } from './support.service.interface';
-import { ChangeSupportStatusDTO, CreateSupportDTO, SupportQuery, UpdateSupportDTO } from './support.input.dto';
+import { ChangeSupportStatusDTO, CreateSupportDTO, SupportQueryDTO, UpdateSupportDTO } from './support.input.dto';
 import { Roles } from 'adapter/decorator';
 import { RoleEnum } from 'app/enum';
 import { DataHelper } from 'adapter/helper/data.helper';
@@ -81,7 +81,7 @@ export class SupportController {
     isArray: true,
     type: DocSupportDTO,
   })
-  async getAll(@Query() param: SupportQuery) {
+  async getAll(@Query() param: SupportQueryDTO) {
     const supports = await this.supportService.fetchAll(param);
     return supports?.map((support) => SupportFactory.getSupport(support));
   }
