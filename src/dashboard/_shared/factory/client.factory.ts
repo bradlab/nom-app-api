@@ -1,7 +1,7 @@
 import { SubscriptionFactory } from './subscription.factory';
 import { Client, OClient } from '../model/client.model';
 import { ICreateClientDTO, IUpdateClientDTO } from 'dashboard/client/client.service.interface';
-import { TransactionFactory } from './transaction.factory';
+import { SupportFactory } from './support.factory';
 import { DataHelper } from 'adapter/helper/data.helper';
 import { HashFactory } from 'adapter/hash.factory';
 
@@ -53,7 +53,7 @@ export abstract class ClientFactory {
         sex: client.sex,
         labelName: client.labelName ?? DataHelper.getFullName(client.firstname, client.lastname),
         subscriptions: deep ? SubscriptionFactory.getSubscriptions(client.subscriptions!) : [],
-        supports: deep ? TransactionFactory.getTransactions(client.supports!) : [],
+        supports: deep ? SupportFactory.getSupports(client.supports!) : [],
         isActivated: client.isActivated,
         nbrSubscription: client.subscriptions?.length,
         nbrSupport: client.supports?.length,

@@ -8,6 +8,7 @@ import { ClientController } from './client.controller';
 import { ICreateStaffDTO } from 'dashboard/auth/auth.service.interface';
 import { IClientService, ICreateClientDTO } from './client.service.interface';
 import { IDashboardRepository } from '../_shared/dashboard.repository';
+import { IRegisterClienttDTO } from './auth/auth.service.interface';
 
 describe('ClientController', () => {
   let controller: ClientController;
@@ -24,6 +25,7 @@ describe('ClientController', () => {
     email: faker.internet.email({ firstName, lastName }),
     address: faker.location.streetAddress(),
     country: faker.location.country(),
+    password: faker.string.alphanumeric(),
   };
 
   beforeAll(async () => {
@@ -54,7 +56,7 @@ describe('ClientController', () => {
   describe('Client Execptions', () => {
     it('should throw Conflict error on create', () => {
       const mockCreate = async () => {
-        await controller.create(data, null as any);
+        await controller.create(data as any, null as any);
       };
       void expect(mockCreate).rejects.toThrow(ConflictException);
     });
@@ -62,7 +64,7 @@ describe('ClientController', () => {
     it('should throw not found error on create', async () => {
       repository.users.findOne = jest.fn(() => undefined as any);
       const mockCreate = async () => {
-        await controller.create(data, null as any);
+        await controller.create(data as any, null as any);
       };
       await expect(mockCreate).rejects.toThrow(NotFoundException);
     });

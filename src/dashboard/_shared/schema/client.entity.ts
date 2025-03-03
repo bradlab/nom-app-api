@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ATimestamp } from 'framework/timestamp.abstract';
-import { SupportTicket } from '../model/transaction.model';
+import { SupportTicket } from '../model/support.model';
 import { SupportEntity } from './support.entity';
 import { ISubscription } from '../model/subscription.model';
 import { SubscriptionEntity } from './subscription.entity';

@@ -60,8 +60,8 @@ export class SubscriptionController {
       @GetUser() client: Staff,
       @Body(new ParseArrayPipe({ items: CreateSubscriptionDTO })) datas: CreateSubscriptionDTO[],
     ) {
-      const prestations = await this.subscriptionService.bulk(client, datas);
-      return prestations?.map((prestation) => SubscriptionFactory.getSubscription(prestation));
+      const subscriptions = await this.subscriptionService.bulk(client, datas);
+      return subscriptions?.map((sub) => SubscriptionFactory.getSubscription(sub));
     }
 
   /**

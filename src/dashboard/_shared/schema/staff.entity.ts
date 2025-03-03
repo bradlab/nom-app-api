@@ -9,7 +9,7 @@ import {
 import { ATimestamp } from 'framework/timestamp.abstract';
 import { RoleEnum, SexEnum } from 'app/enum/global.enum';
 import { Staff } from '../model/staff.model';
-import { SupportTicket } from '../model/transaction.model';
+import { SupportTicket } from '../model/support.model';
 import { SupportEntity } from './support.entity';
 
 @Entity('users')

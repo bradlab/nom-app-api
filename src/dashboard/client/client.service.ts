@@ -127,7 +127,6 @@ export class ClientService implements IClientService {
 
     async bulk(staff: Staff, datas: ICreateClientDTO[]): Promise<Client[]> {
       try {
-        // Vérifier si une annonce avec le même titre existe déjà
         const clients: Client[] = [];
         if (DataHelper.isNotEmptyArray(datas)) {
           if (!staff) {

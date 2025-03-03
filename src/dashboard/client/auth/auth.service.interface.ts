@@ -6,6 +6,9 @@ import { ISigninAccoutDTO, IUpdatePwdDTO, IForgotPasswordDTO } from 'dashboard/a
 export interface IRegisterClienttDTO extends IBasicPersonnalInfoDTO {
   password: string;
   logo?: string;
+  NIF?: string;
+  labelName?: string;
+  city?: string;
   deviceToken?: string;
 }
 export interface ISignedClientDTO {
