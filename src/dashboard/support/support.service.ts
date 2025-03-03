@@ -68,7 +68,6 @@ export class SupportService implements ISupportService {
     }
   }
 
-  // Méthode de pagination inchangée
   async fetchAll(param?: ISupportQuery): Promise<SupportTicket[]> {
     try {
       let dates: IDateFilter = { from: undefined, to: undefined };
